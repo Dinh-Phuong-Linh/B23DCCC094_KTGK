@@ -1,11 +1,21 @@
 import type { IColumn } from '@/components/Table/typing';
-import { Button, Modal, Table } from 'antd';
+import { Button, Modal, Table, Popconfirm } from 'antd';
 import { useEffect } from 'react';
 import { useModel } from 'umi';
 import FormRandomUser from './Form';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const RandomUser = () => {
-	const { data, getDataUser, setRow, isEdit, setVisible, setIsEdit, visible } = useModel('randomuser');
+	const { 
+		data, 
+		getDataUser, 
+		setRow, 
+		isEdit, 
+		setVisible, 
+		setIsEdit, 
+		visible,
+		deleteUserData
+	} = useModel('randomuser');
 
 	useEffect(() => {
 		getDataUser();
@@ -40,18 +50,16 @@ const RandomUser = () => {
 						>
 							Edit
 						</Button>
-						<Button
-							style={{ marginLeft: 10 }}
-							onClick={() => {
-								const dataLocal: any = JSON.parse(localStorage.getItem('data') as any);
-								const newData = dataLocal.filter((item: any) => item.address !== record.address);
-								localStorage.setItem('data', JSON.stringify(newData));
-								getDataUser();
-							}}
-							type='primary'
-						>
-							Delete
-						</Button>
+						{record.status === OrderStatus.PENDING && (
+							<Popconfirm
+								title='Bạn có chắc chắn muốn hủy đơn hàng này?'
+								onConfirm={() => deleteUserData(record.address)}
+								okText='Hủy đơn hàng'
+								cancelText='Không'
+							>
+								<Button type='text' danger icon={<DeleteOutlined />} />
+							</Popconfirm>
+						)}
 					</div>
 				);
 			},

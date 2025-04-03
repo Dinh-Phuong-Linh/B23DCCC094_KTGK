@@ -30,25 +30,40 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 		}
 	};
 
+	const getStatusDisplay = (status: OrderStatus) => {
+		switch (status) {
+			case OrderStatus.PENDING:
+				return 'Pending';
+			case OrderStatus.SHIPPING:
+				return 'Shipping';
+			case OrderStatus.COMPLETED:
+				return 'Completed';
+			case OrderStatus.CANCELLED:
+				return 'Cancelled';
+			default:
+				return status;
+		}
+	};
+
 	const columns = [
 		{
-			title: 'Sản phẩm',
+			title: 'Product',
 			dataIndex: 'productName',
 			key: 'productName',
 		},
 		{
-			title: 'Đơn giá',
+			title: 'Price',
 			dataIndex: 'price',
 			key: 'price',
 			render: (price: number) => `${price.toLocaleString('vi-VN')} VNĐ`,
 		},
 		{
-			title: 'Số lượng',
+			title: 'Quantity',
 			dataIndex: 'quantity',
 			key: 'quantity',
 		},
 		{
-			title: 'Thành tiền',
+			title: 'Total',
 			key: 'total',
 			render: (record: OrderItem) => `${(record.price * record.quantity).toLocaleString('vi-VN')} VNĐ`,
 		},
@@ -56,19 +71,19 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 
 	return (
 		<div>
-			<Title level={5}>Thông tin đơn hàng</Title>
+			<Title level={5}>Order Information</Title>
 			<Descriptions bordered column={2}>
-				<Descriptions.Item label='Mã đơn hàng' span={2}>
+				<Descriptions.Item label='Order ID' span={2}>
 					{order.id}
 				</Descriptions.Item>
-				<Descriptions.Item label='Khách hàng' span={2}>
+				<Descriptions.Item label='Customer' span={2}>
 					{order.customerName}
 				</Descriptions.Item>
-				<Descriptions.Item label='Ngày đặt hàng'>{moment(order.orderDate).format('DD/MM/YYYY')}</Descriptions.Item>
-				<Descriptions.Item label='Trạng thái'>
-					<Tag color={getStatusColor(order.status)}>{order.status}</Tag>
+				<Descriptions.Item label='Order Date'>{moment(order.orderDate).format('DD/MM/YYYY')}</Descriptions.Item>
+				<Descriptions.Item label='Status'>
+					<Tag color={getStatusColor(order.status)}>{getStatusDisplay(order.status)}</Tag>
 				</Descriptions.Item>
-				<Descriptions.Item label='Tổng tiền' span={2}>
+				<Descriptions.Item label='Total Amount' span={2}>
 					<span style={{ fontWeight: 'bold', fontSize: '16px', color: '#f50' }}>
 						{order.total.toLocaleString('vi-VN')} VNĐ
 					</span>
@@ -76,7 +91,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 			</Descriptions>
 
 			<Title level={5} style={{ marginTop: 20 }}>
-				Chi tiết sản phẩm
+				Product Details
 			</Title>
 			<Table
 				columns={columns}
@@ -87,7 +102,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 					<Table.Summary fixed>
 						<Table.Summary.Row>
 							<Table.Summary.Cell index={0} colSpan={3} align='right'>
-								<strong>Tổng cộng:</strong>
+								<strong>Total:</strong>
 							</Table.Summary.Cell>
 							<Table.Summary.Cell index={1}>
 								<span style={{ fontWeight: 'bold', fontSize: '16px', color: '#f50' }}>

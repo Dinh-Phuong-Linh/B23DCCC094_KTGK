@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-components';
-import { Drawer } from 'antd';
+import { Drawer, Button, Space } from 'antd';
 import { useOrderModel, Order, OrderStatus, OrderItem } from '@/models/order';
 import OrderList from './components/OrderList';
 import OrderModal from './components/OrderModal';
 import OrderDetail from './components/OrderDetail';
+import { ReloadOutlined } from '@ant-design/icons';
 
 const OrderManager: React.FC = () => {
   const {
@@ -61,8 +62,38 @@ const OrderManager: React.FC = () => {
     setModalVisible(false);
   };
 
+  // Hàm reset dữ liệu
+  const handleResetData = () => {
+    // Xóa tất cả dữ liệu đơn hàng trong localStorage
+    localStorage.removeItem('orders');
+    localStorage.removeItem('customers');
+    localStorage.removeItem('products');
+    
+    // Tải lại trang
+    window.location.reload();
+  };
+
   return (
-    <PageContainer title="Quản lý đơn hàng">
+    <PageContainer 
+      title="Order Management"
+      extra={[
+        <Button 
+          key="reset" 
+          icon={<ReloadOutlined />} 
+          onClick={handleResetData}
+          style={{ marginRight: 8 }}
+        >
+          Reset Data
+        </Button>,
+        <Button 
+          key="add" 
+          type="primary" 
+          onClick={handleAdd}
+        >
+          Add Order
+        </Button>
+      ]}
+    >
       <OrderList
         orders={filteredOrders}
         loading={loading}
@@ -89,7 +120,7 @@ const OrderManager: React.FC = () => {
       />
 
       <Drawer
-        title="Chi tiết đơn hàng"
+        title="Order Details"
         width={700}
         onClose={() => setDetailVisible(false)}
         visible={detailVisible}

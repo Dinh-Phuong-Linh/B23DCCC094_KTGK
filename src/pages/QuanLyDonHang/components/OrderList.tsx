@@ -53,6 +53,21 @@ const OrderList: React.FC<OrderListProps> = ({
 		}
 	};
 
+	const getStatusDisplay = (status: OrderStatus) => {
+		switch (status) {
+			case OrderStatus.PENDING:
+				return 'Pending';
+			case OrderStatus.SHIPPING:
+				return 'Shipping';
+			case OrderStatus.COMPLETED:
+				return 'Completed';
+			case OrderStatus.CANCELLED:
+				return 'Cancelled';
+			default:
+				return status;
+		}
+	};
+
 	const columns: ColumnsType<Order> = [
 		{
 			title: 'Mã đơn hàng',
@@ -90,12 +105,12 @@ const OrderList: React.FC<OrderListProps> = ({
 			dataIndex: 'status',
 			key: 'status',
 			width: 150,
-			render: (status: OrderStatus) => <Tag color={getStatusColor(status)}>{status}</Tag>,
+			render: (status: OrderStatus) => <Tag color={getStatusColor(status)}>{getStatusDisplay(status)}</Tag>,
 			filters: [
-				{ text: 'Chờ xác nhận', value: OrderStatus.PENDING },
-				{ text: 'Đang giao', value: OrderStatus.SHIPPING },
-				{ text: 'Hoàn thành', value: OrderStatus.COMPLETED },
-				{ text: 'Hủy', value: OrderStatus.CANCELLED },
+				{ text: 'Pending', value: OrderStatus.PENDING },
+				{ text: 'Shipping', value: OrderStatus.SHIPPING },
+				{ text: 'Completed', value: OrderStatus.COMPLETED },
+				{ text: 'Cancelled', value: OrderStatus.CANCELLED },
 			],
 			filteredValue: filterStatus ? [filterStatus] : null,
 		},
@@ -109,10 +124,10 @@ const OrderList: React.FC<OrderListProps> = ({
 					<Button type='text' icon={<EditOutlined />} onClick={() => onEdit(record)} />
 					{record.status === OrderStatus.PENDING && (
 						<Popconfirm
-							title='Bạn có chắc chắn muốn hủy đơn hàng này?'
+							title='Are you sure you want to cancel this order?'
 							onConfirm={() => onCancel(record.id)}
-							okText='Hủy đơn hàng'
-							cancelText='Không'
+							okText='Yes, cancel'
+							cancelText='No'
 						>
 							<Button type='text' danger icon={<DeleteOutlined />} />
 						</Popconfirm>
@@ -141,7 +156,7 @@ const OrderList: React.FC<OrderListProps> = ({
 			<div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
 				<Space>
 					<Input
-						placeholder='Tìm kiếm theo mã đơn hàng hoặc khách hàng'
+						placeholder='Search by order ID or customer name'
 						value={searchKeyword}
 						onChange={(e) => onSearch(e.target.value)}
 						style={{ width: 300 }}
@@ -149,21 +164,28 @@ const OrderList: React.FC<OrderListProps> = ({
 						allowClear
 					/>
 					<Select
-						placeholder='Lọc theo trạng thái'
+						placeholder='Filter by status'
 						style={{ width: 200 }}
 						allowClear
 						onChange={(value) => onFilterByStatus((value as OrderStatus) || '')}
 						value={filterStatus || undefined}
 					>
-						{Object.values(OrderStatus).map((status) => (
-							<Option key={status} value={status}>
-								{status}
-							</Option>
-						))}
+						<Option key={OrderStatus.PENDING} value={OrderStatus.PENDING}>
+							Pending
+						</Option>
+						<Option key={OrderStatus.SHIPPING} value={OrderStatus.SHIPPING}>
+							Shipping
+						</Option>
+						<Option key={OrderStatus.COMPLETED} value={OrderStatus.COMPLETED}>
+							Completed
+						</Option>
+						<Option key={OrderStatus.CANCELLED} value={OrderStatus.CANCELLED}>
+							Cancelled
+						</Option>
 					</Select>
 				</Space>
 				<Button type='primary' icon={<PlusOutlined />} onClick={onAdd}>
-					Thêm đơn hàng
+					Add Order
 				</Button>
 			</div>
 			<Table

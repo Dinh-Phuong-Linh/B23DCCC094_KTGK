@@ -118,18 +118,18 @@ const OrderModal: React.FC<OrderModalProps> = ({
 
 	const columns = [
 		{
-			title: 'Sản phẩm',
+			title: 'Product',
 			dataIndex: 'productName',
 			key: 'productName',
 		},
 		{
-			title: 'Giá',
+			title: 'Price',
 			dataIndex: 'price',
 			key: 'price',
 			render: (price: number) => `${price.toLocaleString('vi-VN')} VNĐ`,
 		},
 		{
-			title: 'Số lượng',
+			title: 'Quantity',
 			dataIndex: 'quantity',
 			key: 'quantity',
 			render: (quantity: number, record: OrderItem) => (
@@ -141,12 +141,12 @@ const OrderModal: React.FC<OrderModalProps> = ({
 			),
 		},
 		{
-			title: 'Thành tiền',
+			title: 'Total',
 			key: 'total',
 			render: (record: OrderItem) => `${(record.price * record.quantity).toLocaleString('vi-VN')} VNĐ`,
 		},
 		{
-			title: 'Thao tác',
+			title: 'Action',
 			key: 'action',
 			render: (record: OrderItem) => (
 				<Button type='text' danger icon={<DeleteOutlined />} onClick={() => handleRemoveItem(record.productId)} />
@@ -154,7 +154,7 @@ const OrderModal: React.FC<OrderModalProps> = ({
 		},
 	];
 
-	const title = type === 'add' ? 'Thêm đơn hàng mới' : 'Cập nhật đơn hàng';
+	const title = type === 'add' ? 'Add New Order' : 'Edit Order';
 
 	return (
 		<Modal
@@ -164,10 +164,10 @@ const OrderModal: React.FC<OrderModalProps> = ({
 			width={800}
 			footer={[
 				<Button key='back' onClick={onCancel}>
-					Hủy
+					Cancel
 				</Button>,
 				<Button key='submit' type='primary' onClick={handleAdd}>
-					{type === 'add' ? 'Thêm' : 'Cập nhật'}
+					{type === 'add' ? 'Add' : 'Update'}
 				</Button>,
 			]}
 		>
@@ -182,10 +182,10 @@ const OrderModal: React.FC<OrderModalProps> = ({
 					<Col span={12}>
 						<Form.Item
 							name='customerId'
-							label='Khách hàng'
-							rules={[{ required: true, message: 'Vui lòng chọn khách hàng!' }]}
+							label='Customer'
+							rules={[{ required: true, message: 'Please select a customer!' }]}
 						>
-							<Select placeholder='Chọn khách hàng'>
+							<Select placeholder='Select customer'>
 								{customers.map((customer) => (
 									<Option key={customer.id} value={customer.id}>
 										{customer.name} - {customer.phone}
@@ -195,25 +195,32 @@ const OrderModal: React.FC<OrderModalProps> = ({
 						</Form.Item>
 					</Col>
 					<Col span={12}>
-						<Form.Item name='status' label='Trạng thái'>
-							<Select placeholder='Chọn trạng thái'>
-								{Object.values(OrderStatus).map((status) => (
-									<Option key={status} value={status}>
-										{status}
-									</Option>
-								))}
+						<Form.Item name='status' label='Status'>
+							<Select placeholder='Select status'>
+								<Option key={OrderStatus.PENDING} value={OrderStatus.PENDING}>
+									Pending
+								</Option>
+								<Option key={OrderStatus.SHIPPING} value={OrderStatus.SHIPPING}>
+									Shipping
+								</Option>
+								<Option key={OrderStatus.COMPLETED} value={OrderStatus.COMPLETED}>
+									Completed
+								</Option>
+								<Option key={OrderStatus.CANCELLED} value={OrderStatus.CANCELLED}>
+									Cancelled
+								</Option>
 							</Select>
 						</Form.Item>
 					</Col>
 				</Row>
 
-				<Divider>Thông tin sản phẩm</Divider>
+				<Divider>Product Information</Divider>
 
 				<Row gutter={16} style={{ marginBottom: 16 }}>
 					<Col span={18}>
 						<Select
 							style={{ width: '100%' }}
-							placeholder='Chọn sản phẩm'
+							placeholder='Select product'
 							onChange={handleSelectProduct}
 							optionFilterProp='children'
 							showSearch
@@ -234,7 +241,7 @@ const OrderModal: React.FC<OrderModalProps> = ({
 								if (select) select.click();
 							}}
 						>
-							Thêm sản phẩm
+							Add Product
 						</Button>
 					</Col>
 				</Row>
@@ -248,7 +255,7 @@ const OrderModal: React.FC<OrderModalProps> = ({
 						<Table.Summary fixed>
 							<Table.Summary.Row>
 								<Table.Summary.Cell index={0} colSpan={2}>
-									Tổng tiền
+									Total Amount
 								</Table.Summary.Cell>
 								<Table.Summary.Cell index={1} colSpan={3}>
 									<span style={{ fontWeight: 'bold', fontSize: '16px' }}>{total.toLocaleString('vi-VN')} VNĐ</span>
