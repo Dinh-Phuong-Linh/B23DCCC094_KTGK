@@ -36,6 +36,12 @@
 		component: './RandomUser',
 		icon: 'ArrowsAltOutlined',
 	},
+	{
+		path: '/order',
+		name: 'Quản lí đơn hàng',
+		component: './QuanLyDonHang',
+		icon: 'ArrowsAltOutlined',
+	},
 
 	// DANH MUC HE THONG
 	// {
